@@ -1,0 +1,16 @@
+syntax: glob
+.depend
+*.o
+*.d
+*~
+autogen
+.confFilePath
+omninames*
+rtc.conf
+Wfdm16Reader/Wfdm16ReaderComp
+Wfdm16Monitor/Wfdm16MonitorComp
+Wfdm16Logger/Wfdm16LoggerComp
+*.old
+*.0
+*.1
+*.pyc
