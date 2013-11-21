@@ -14,3 +14,4 @@ Wfdm16Logger/Wfdm16LoggerComp
 *.0
 *.1
 *.pyc
+bs/decode/sampledata
