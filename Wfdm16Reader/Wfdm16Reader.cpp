@@ -89,6 +89,9 @@ int Wfdm16Reader::daq_configure()
 
     if (m_set_registers) {
         for (unsigned int i = 0; i < m_module_list.size(); i++) {
+            if (set_adc_registers(m_module_list[i].ip_address) < 0) {
+                fatal_error_report(USER_DEFINED_ERROR1, "CANNOT RESET ADC REGISTERS");
+            }
             if (set_window_size(m_module_list[i].ip_address, m_module_list[i].window_size) < 0) {
                 fatal_error_report(USER_DEFINED_ERROR1, "CANNOT SET WINDOW SIZE");
             }
@@ -458,7 +461,6 @@ int Wfdm16Reader::daq_run()
         }
         int data_byte_size = get_data_byte_size(&mi->buf[0], WFDM_HEADER_BYTE_SIZE);
         m_read_byte_size = WFDM_HEADER_BYTE_SIZE + data_byte_size;
-        std::cerr << m_read_byte_size << std::endl;
 
         status = mi->Sock.readAll(&mi->buf[WFDM_HEADER_BYTE_SIZE], data_byte_size);
         if (status != DAQMW::Sock::SUCCESS) {
@@ -480,7 +482,7 @@ int Wfdm16Reader::daq_run()
         }
 
         // Read from one socket done.  Now trying to write outport
-        set_data(m_module_list[i].buf, m_read_byte_size);
+        set_data(mi->buf, m_read_byte_size);
         unsigned int max_retry = 1024;
         for (unsigned int retry = 0; retry < max_retry; retry ++) {
             if (write_OutPort() == 0) { // write success
