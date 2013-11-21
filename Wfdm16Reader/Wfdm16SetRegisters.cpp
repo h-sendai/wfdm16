@@ -26,11 +26,17 @@ int get_board_version(std::string ip_address)
 {
     SitcpRbcp bcp;
     unsigned char reg_value[1];
+    unsigned char board_version;
+
     if (bcp.read_registers(ip_address, 0x4, 1, reg_value) < 0) {
         return -1;
     }
 
-    if (reg_value[0] == 0x02) {
+    board_version = reg_value[0];
+    board_version = (board_version & 0xF0);
+    board_version = (board_version >> 4);
+
+    if (board_version == 2) {
         return 2; // Version 2 board
     }
     else {
@@ -42,36 +48,46 @@ int get_board_version(std::string ip_address)
 
 int Wfdm16Reader::set_adc_registers(std::string ip_address)
 {
-    int board_version = get_board_version(ip_address);
-    if (board_version < 0) {
-        return -1;
-    }
+    // int board_version = get_board_version(ip_address);
+    // if (board_version < 0) {
+    //    return -1;
+    // }
 
+    // reset ADC (soft reset)
     write_register_one_byte(ip_address, 0x10,  0x0);
     write_register_one_byte(ip_address, 0x100, 0x3c);
     write_register_one_byte(ip_address, 0x10,  0x1);
     write_register_one_byte(ip_address, 0x100, 0x3c);
     
+    // internal power down mode (do reset)
     write_register_one_byte(ip_address, 0x10,  0x0);
     write_register_one_byte(ip_address, 0x108, 0x3);
     write_register_one_byte(ip_address, 0x10,  0x1);
     write_register_one_byte(ip_address, 0x108, 0x3);
     usleep(100000);
 
+    // internal power down mode (do release reset)
     write_register_one_byte(ip_address, 0x10,  0x0);
     write_register_one_byte(ip_address, 0x108, 0x0);
     write_register_one_byte(ip_address, 0x10,  0x1);
     write_register_one_byte(ip_address, 0x108, 0x0);
     
-    if (board_version == 1) {
-        write_register_one_byte(ip_address, 0x10,  0x0);
-        write_register_one_byte(ip_address, 0x121, 0x3);
-        write_register_one_byte(ip_address, 0x1ff, 0x1);
-        write_register_one_byte(ip_address, 0x10,  0x1);
-        write_register_one_byte(ip_address, 0x121, 0x3);
-        write_register_one_byte(ip_address, 0x1ff, 0x1);
-    }
+    // if (board_version == 1) {
+    //    write_register_one_byte(ip_address, 0x10,  0x0);
+    //    write_register_one_byte(ip_address, 0x121, 0x3);
+    //    write_register_one_byte(ip_address, 0x1ff, 0x1);
+    //    write_register_one_byte(ip_address, 0x10,  0x1);
+    //    write_register_one_byte(ip_address, 0x121, 0x3);
+    //    write_register_one_byte(ip_address, 0x1ff, 0x1);
+    // }
 
+    // Ouput format: offset binary
+    write_register_one_byte(ip_address, 0x10,  0x0);
+    write_register_one_byte(ip_address, 0x114, 0x0);
+    write_register_one_byte(ip_address, 0x10,  0x1);
+    write_register_one_byte(ip_address, 0x114, 0x0);
+
+    // FPGA ADC interface reset
     write_register_one_byte(ip_address, 0x5, 0x1);
     write_register_one_byte(ip_address, 0x5, 0x0);
 
