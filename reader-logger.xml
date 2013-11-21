@@ -24,13 +24,11 @@
                         <param pid="windowSize">10</param>
                         <param pid="delay">10</param>
                         <param pid="setRegisters">yes</param>
-                        <!--
                         <param pid="srcAddr">192.168.10.17</param>
                         <param pid="srcPort">24</param>
                         <param pid="windowSize">10</param>
                         <param pid="delay">10</param>
                         <param pid="setRegisters">yes</param>
-                        -->
                     </params>
                 </component>
                 <component cid="Wfdm16Logger0">
