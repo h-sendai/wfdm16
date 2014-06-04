@@ -20,12 +20,12 @@ def main():
     rbcp.set_timeout(1.0)
     ip_address_list = [
         '192.168.10.16',
-        '192.168.10.17'
+#        '192.168.10.17'
     ]
     
     for ip_address in ip_address_list:
         #board_version = get_board_version(ip_address)
-        board_version = 2
+        board_version = 1
 
         # reset ADC (soft reset)
         rbcp.write_register_f(ip_address, 0x10,  '>B', 0x0)

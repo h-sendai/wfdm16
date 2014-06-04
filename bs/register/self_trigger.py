@@ -3,7 +3,7 @@
 import SitcpRbcp
 
 rbcp = SitcpRbcp.SitcpRbcp()
-#rbcp.set_verify_mode()
+#rbcp.unset_verify_mode()
 rbcp.set_timeout(1.0)
 
 ip_address = {}
@@ -31,22 +31,22 @@ th['y'] = {}
 
 # th['x' or 'y'][ch] = thres value
 
-th['x'][0]  = 0
-th['x'][1]  = 1
-th['x'][2]  = 2
-th['x'][3]  = 3
-th['x'][4]  = 4
-th['x'][5]  = 5
-th['x'][6]  = 6
-th['x'][7]  = 7
-th['x'][8]  = 8
-th['x'][9]  = 9
-th['x'][10] = 10
-th['x'][11] = 11
-th['x'][12] = 12
-th['x'][13] = 13
-th['x'][14] = 14
-th['x'][15] = 15
+th['x'][0]  = 0xc80
+th['x'][1]  = 0xc80
+th['x'][2]  = 0xc80
+th['x'][3]  = 0xc80
+th['x'][4]  = 0xc80
+th['x'][5]  = 0xc80
+th['x'][6]  = 0xc80
+th['x'][7]  = 0xc80
+th['x'][8]  = 0xc80
+th['x'][9]  = 0xc80
+th['x'][10] = 0xc80
+th['x'][11] = 0xc80
+th['x'][12] = 0xc80
+th['x'][13] = 0xc80
+th['x'][14] = 0xc80
+th['x'][15] = 0xc80
 
 th['y'][0]  = 0
 th['y'][1]  = 10
@@ -65,22 +65,24 @@ th['y'][13] = 130
 th['y'][14] = 140
 th['y'][15] = 150
 
-for a in ('x', 'y'):
+#for a in ('x', 'y'):
+for a in ('x'):
     print '--->', ip_address[a]
     print "trigger_enable: %s" % (a),
     print "trigger_enable address: 0x%x 0x%x" % (trigger_enable['address'], trigger_enable[a])
-    #rbcp.write_register_f(ip_address[a], trigger_enable['address'], '>H', trigger_enable[a])
+    rbcp.write_register_f(ip_address[a], trigger_enable['address'], '>H', trigger_enable[a])
 
     print "trigger_polality: %s" % (a),
     print "trigger_polarity address: 0x%x 0x%x" % (trigger_polarity['address'], trigger_polarity[a])
-    #rbcp.write_register_f(ip_address[a], trigger_polarity['address'], '>H', trigger_polarity[a])
+    rbcp.write_register_f(ip_address[a], trigger_polarity['address'], '>H', trigger_polarity[a])
 
     print "trigger_delay: %s" % (a),
     print "trigger_delay address: 0x%x 0x%x" % (trigger_delay['address'], trigger_delay[a])
-    #rbcp.write_register_f(ip_address[a], trigger_polarity['address'], '>H', trigger_polarity[a])
+    rbcp.write_register_f(ip_address[a], trigger_polarity['address'], '>H', trigger_polarity[a])
 
     for ch in sorted(th[a].keys()):
         adc_thres_base_address = 0x20
-        print 'thr address: %02x' % (adc_thres_base_address + 2*ch),
+        address = adc_thres_base_address + 2*ch
+        #print 'thr address: %02x' % address
         print 'ch: %d value: %d' % (ch, th[a][ch])
-        #rbcp.write_register_f(ip_address[a], th[a][ch], '>H', th[a][ch])
+        rbcp.write_register_f(ip_address[a], address, '>H', th[a][ch])
